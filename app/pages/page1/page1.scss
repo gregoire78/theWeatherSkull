@@ -1,6 +1,9 @@
 .page1 {
-  background: #a5d2ff url('/build/pages/page1/pluie.png') no-repeat center;
+  background: url('http://image.noelshack.com/fichiers/2016/12/1459000356-pluie.png') no-repeat center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
   scroll-content{
-    background-color: rgba(165, 210, 255, 0.46);;
+    background-color: rgba(165, 210, 255, 0.46);
   }
 }

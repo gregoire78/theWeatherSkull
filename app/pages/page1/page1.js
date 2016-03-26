@@ -10,8 +10,8 @@ import {Geolocation} from 'ionic-native';
 export class Page1 {
     constructor() {
         Geolocation.getCurrentPosition().then((resp) => {
-            this.pos = resp.coords.latitude;
-            this.pos1 = resp.coords.longitude
+            this.posi = resp.coords.latitude;
+            this.posp = resp.coords.longitude
         });
     }
 }
