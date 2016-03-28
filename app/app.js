@@ -1,10 +1,13 @@
 import {App, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
-import {TabsPage} from './pages/tabs/tabs';
+import {Page1} from './pages/page1/page1';
+import {HTTP_PROVIDERS} from 'angular2/http';
+import * as rx from 'rxjs';
 
 
 @App({
-    template: '<ion-nav [root]="rootPage"></ion-nav>',
+    viewProviders: [HTTP_PROVIDERS],
+    templateUrl: 'build/app.html',
     config: {} // http://ionicframework.com/docs/v2/api/config/Config/
 })
 export class MyApp {
@@ -13,7 +16,7 @@ export class MyApp {
     }
 
     constructor(platform) {
-        this.rootPage = TabsPage;
+        this.rootPage = Page1;
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.

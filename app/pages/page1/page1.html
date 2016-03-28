@@ -1,17 +1,22 @@
-<ion-navbar *navbar>
+<ion-navbar primary>
     <ion-title>Home</ion-title>
 </ion-navbar>
 
 <ion-content padding class="page1">
-    <current-time>Loading...</current-time>
-    <nav-button></nav-button>
+
     <div>{{posi}} {{posp}}</div>
     <h2>The Weather's Skull</h2>
     <p>
         Simple Application météo OUAIIII
     </p>
     <p>
-        Take a look at the <code>www/app/</code> directory to add or change tabs,
-        update any existing page or create new pages.
+        <button (click)="goToPage2()" outline block >
+            <ion-icon name="search"></ion-icon>
+            Recherche
+        </button>
     </p>
+    <button (click)="getWeather()">Rafraichir</button>
+    <p>{{datas.name}} {{longi.lon}} {{longi.lat}}</p>
+    <h2>{{tempMain.temp}}°C</h2>
+    <current-time>Loading...</current-time>
 </ion-content>
