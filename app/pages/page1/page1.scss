@@ -3,11 +3,19 @@
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
-  scroll-content{
+  scroll-content {
     background-color: rgba(165, 210, 255, 0.46);
   }
 
-  current-time{
+  current-time {
+    text-align: center;
+  }
 
+  #temp{
+    font-size: 10rem;;
+  }
+  #utemp{
+    font-size: 4.58em;
+    position: absolute;
   }
 }

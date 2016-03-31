@@ -22,6 +22,9 @@ export class Page1 {
         this.datas = {};
         this.longi = {};
         this.tempMain = {};
+        this.sys = {};
+        this.sunrise = "";
+        this.sunset = "";
         Geolocation.getCurrentPosition().then((resp) => {
             this.posi = resp.coords.latitude;
             this.posp = resp.coords.longitude;
@@ -32,8 +35,19 @@ export class Page1 {
         this.nav.push(Page2);
     }
     getWeather(){
-        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+this.posi+'&lon='+this.posp+'&units=metric&appid=f513805255c080947d4115bc85cf923e')
+        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+this.posi+'&lon='+this.posp+'&appid=f513805255c080947d4115bc85cf923e&lang=fr&units=metric')
             .map(response => response.json())
-            .subscribe(result => {this.datas = result; this.longi = result.coord; this.tempMain = result.main; console.log(result)});
+            .subscribe(result => {
+                this.datas = result;
+                this.longi = result.coord;
+                this.tempMain = result.main;
+                this.sys = result.sys;
+                var date_sunrise = new Date(this.sys.sunrise*1000);
+                var date_sunset = new Date(this.sys.sunset*1000);
+                this.sunrise = date_sunrise.getHours() + 'h' + ('0' + date_sunrise.getMinutes()).slice(-2);
+                this.sunset = date_sunset.getHours() + 'h' + ('0' + date_sunset.getMinutes()).slice(-2);
+                console.log(result, this.sunset)
+            });
+
     }
 }

@@ -2,13 +2,15 @@
  * Created by gregoire on 25/03/2016.
  */
 import {Component} from 'angular2/core';
+import {IONIC_DIRECTIVES} from 'ionic-angular';
 
 @Component({
     selector: 'current-time',
     template: `
         <h1>{{strDay(day)}} {{dat}} {{strMonth(month)}} {{year}}</h1>
         <h2>{{hour}}h {{minute}}m {{seconde}}s</h2>
-    `
+    `,
+    directives: [IONIC_DIRECTIVES]
 })
 export class CurrentTime {
     time:Date;
