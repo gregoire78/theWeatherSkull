@@ -3,17 +3,13 @@
 </ion-navbar>
 
 <ion-content padding class="page1">
-
     <div>{{posi}} {{posp}}</div>
     <h2>The Weather's Skull</h2>
     <p>
         Simple Application météo OUAIIII
     </p>
     <p>
-        <button (click)="goToPage2()" outline block >
-            <ion-icon name="search"></ion-icon>
-            Recherche
-        </button>
+        <nav-button></nav-button>
     </p>
     <button (click)="getWeather()">Rafraichir</button>
     <p>{{datas.name}} {{longi.lon}} {{longi.lat}}</p>

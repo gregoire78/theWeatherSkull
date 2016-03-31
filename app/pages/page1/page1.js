@@ -4,10 +4,11 @@ import {Geolocation} from 'ionic-native';
 import {NavController} from 'ionic-angular';
 import {Page2} from '../page2/page2';
 import {Http} from 'angular2/http';
+import {NavButton} from './navButton';
 
 @Page({
     templateUrl: 'build/pages/page1/page1.html',
-    directives: [CurrentTime]
+    directives: [CurrentTime, NavButton]
 })
 export class Page1 {
     posi: int;
