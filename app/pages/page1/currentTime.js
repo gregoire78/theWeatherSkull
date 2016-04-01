@@ -8,7 +8,7 @@ import {IONIC_DIRECTIVES} from 'ionic-angular';
     selector: 'current-time',
     template: `
         <h1>{{strDay(day)}} {{dat}} {{strMonth(month)}} {{year}}</h1>
-        <h2>{{hour}}h {{minute}}m {{seconde}}s</h2>
+        <h2>{{hour}}h{{minute}}</h2>
     `,
     directives: [IONIC_DIRECTIVES]
 })
@@ -48,7 +48,7 @@ export class CurrentTime {
             this.month = this.time.getMonth();
             this.year = this.time.getFullYear();
             this.hour = this.time.getHours();
-            this.minute = this.time.getMinutes();
+            this.minute = ("0" + this.time.getMinutes()).slice(-2);
             this.seconde = this.time.getSeconds();
         }, 1000);
     }
