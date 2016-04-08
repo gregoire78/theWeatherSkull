@@ -2,37 +2,80 @@ import {Page} from 'ionic-angular';
 import {CurrentTime} from './currentTime';
 import {Geolocation} from 'ionic-native';
 import {NavController} from 'ionic-angular';
-import {Page2} from '../page2/page2';
 import {Http} from 'angular2/http';
+import {NavButton} from './navButton';
 
 @Page({
-    templateUrl: 'build/pages/page1/page1.html',
-    directives: [CurrentTime]
+    template: `
+<ion-navbar primary>
+    <ion-title>The Weather Skull</ion-title>
+</ion-navbar>
+<nav-button [address]="address"></nav-button>
+<ion-content padding class="page1">
+    <current-time>Loading...</current-time>
+    <ion-row>
+        <ion-col width-60>
+            <h3>
+                <i class="wi wi-owm-{{datas.weather_id}}"></i> {{datas.weather_desc}}
+                <hr>
+                <i class="wi wi-sunrise"></i> {{datas.sunrise}}<br>
+                <i class="wi wi-sunset"></i> {{datas.sunset}}
+            </h3>
+        </ion-col>
+        <icon-col width-40>
+            <!--<img src="http://www.yourplaceabroad.com/_img/weather_icons/icons_200/{{datas.weather_icon}}.png" alt="icon">-->
+            <!--<img src="http://www.pf-arkhbum.ru/skin/img/icons/weather/day/{{datas.weather_icon}}.png" alt="icon">-->
+            <!--<img src="http://www.motorwerksporsche.com/wp-content/themes/DealerInspireCommonTheme/images/mobile/weather/{{datas.weather_icon}}.png" alt="icon">-->
+            <img src="http://weatherandtime.net/images/icons/1/{{datas.weather_icon}}.png" alt="icon">
+            <!--<img src="http://www.kankou-nanjo.okinawa/img/weather/{{datas.weather_icon}}.png" alt="icon">-->
+        </icon-col>
+    </ion-row>
+    <p id="temp"><span id="val-temp">{{datas.temp}}</span><span id="celsius">°C</span></p>
+</ion-content>
+<ion-toolbar position="bottom">
+  <p>Ash, Misty, Brock</p>
+  <ion-buttons end>
+    <button royal>
+      Send
+      <ion-icon name="send"></ion-icon>
+    </button>
+  </ion-buttons>
+</ion-toolbar>`,
+    directives: [CurrentTime, NavButton]
 })
 export class Page1 {
-    posi: int;
-    posp: int;
+    lat: int;
+    lng: int;
     datas: {};
-    longi: {};
-    tempMain: {};
     constructor(nav: NavController, http: Http) {
         this.nav = nav;
         this.http = http;
         this.datas = {};
-        this.longi = {};
-        this.tempMain = {};
         Geolocation.getCurrentPosition().then((resp) => {
-            this.posi = resp.coords.latitude;
-            this.posp = resp.coords.longitude;
+            this.lat = resp.coords.latitude;
+            this.lng = resp.coords.longitude;
             this.getWeather();
         });
     }
-    goToPage2(){
-        this.nav.push(Page2);
-    }
+
     getWeather(){
-        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+this.posi+'&lon='+this.posp+'&units=metric&appid=f513805255c080947d4115bc85cf923e')
+        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+this.lat+'&lon='+this.lng+'&appid=f513805255c080947d4115bc85cf923e&lang=fr&units=metric')
             .map(response => response.json())
-            .subscribe(result => {this.datas = result; this.longi = result.coord; this.tempMain = result.main; console.log(result)});
+            .subscribe((result) => {
+                this.datas = result;
+                this.address = result.name;
+                this.datas['temp'] = result.main.temp;
+                this.datas['sunrise'] = this.hourFormat(result.sys.sunrise);
+                this.datas['sunset'] = this.hourFormat(result.sys.sunset);
+                this.datas['weather_id'] = result.weather[0].id;
+                this.datas['weather_desc'] = result.weather[0].description;
+                this.datas['weather_icon'] = result.weather[0].icon;
+                console.log(result)
+            }, (error) => console.log("error : " + error), (complete) => console.log("complet !"));
+    }
+
+    hourFormat(date){
+        date = new Date(date*1000);
+        return date.getHours() + 'h' + ('0' + date.getMinutes()).slice(-2);
     }
 }
