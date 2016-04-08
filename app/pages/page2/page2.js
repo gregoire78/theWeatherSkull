@@ -79,7 +79,7 @@ export class Page2 {
             var lng = this.place.geometry.location.lng();
 
             this.map.setCenter(this.place.geometry.location);
-            this.map.setZoom(14);
+            this.map.setZoom(12);
 
             this.address = '';
             if (this.place.address_components) {
@@ -119,6 +119,9 @@ export class Page2 {
     }
 
     loadMap() {
+        var styledMap = new google.maps.StyledMapType([{"featureType":"landscape","stylers":[{"hue":"#FFBB00"},{"saturation":43.400000000000006},{"lightness":37.599999999999994},{"gamma":1}]},{"featureType":"road.highway","stylers":[{"hue":"#FFC200"},{"saturation":-61.8},{"lightness":45.599999999999994},{"gamma":1}]},{"featureType":"road.arterial","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":51.19999999999999},{"gamma":1}]},{"featureType":"road.local","stylers":[{"hue":"#FF0300"},{"saturation":-100},{"lightness":52},{"gamma":1}]},{"featureType":"water","stylers":[{"hue":"#0078FF"},{"saturation":-13.200000000000003},{"lightness":2.4000000000000057},{"gamma":1}]},{"featureType":"poi","stylers":[{"hue":"#00FF6A"},{"saturation":-1.0989010989011234},{"lightness":11.200000000000017},{"gamma":1}]}],
+            {name: "météo"});
+
         let options = {timeout: 10000, enableHighAccuracy: true};
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -126,11 +129,16 @@ export class Page2 {
 
                 let mapOptions = {
                     center: latLng,
-                    zoom: 14,
-                    mapTypeId: google.maps.MapTypeId.HYBRID
+                    zoom: 12,
+                    // mapTypeId: google.maps.MapTypeId.HYBRID,
+                    mapTypeControlOptions: {
+                        mapTypeIds: [google.maps.MapTypeId.HYBRID, 'map_style']
+                    }
                 };
 
                 this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                this.map.mapTypes.set('map_style', styledMap);
+                this.map.setMapTypeId('map_style');
             },
 
             (error) => {
