@@ -26,7 +26,6 @@ export class Page2 {
   }
 
   load(){
-    let options = {timeout: 10000, enableHighAccuracy: true};
 
     var autocomplete = new google.maps.places.Autocomplete((document.getElementById("dede")));
 
@@ -42,7 +41,7 @@ export class Page2 {
   }
 
   loadMap(){
-
+    let options = {timeout: 10000, enableHighAccuracy: true};
     navigator.geolocation.getCurrentPosition(
 
         (position) => {
