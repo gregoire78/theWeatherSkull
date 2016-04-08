@@ -2,7 +2,23 @@ import {Page} from 'ionic-angular';
 import {Http} from 'angular2/http';
 
 @Page({
-  templateUrl: 'build/pages/page2/page2.html'
+  template: `
+<ion-navbar *navbar>
+  <ion-title>
+    Géolocalisation
+  </ion-title>
+  <ion-buttons end>
+    
+  </ion-buttons>  
+</ion-navbar>
+
+<ion-content class="page2">
+
+
+ <input (click)="load()" id="dede" autocapitalize="off" autocomplete="off" autocorrect="off" class="searchbar-input" spellcheck="false" type="search" placeholder="Search">
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAC4k0qIOxFSbHMZ6Du0sirVICthUVkwfU&libraries=places"></script>
+
+</ion-content>`
 })
 export class Page2 {
 	constructor(http: Http) {
