@@ -24,6 +24,9 @@ export class Page2 {
     this.http = http;
     this.map = null;
     this.loadMap();
+    this.dataWeather = {};
+      this.address = "";
+      this.place = ""
   }
 
   load(){
@@ -33,51 +36,85 @@ export class Page2 {
 
       var infowindow = new google.maps.InfoWindow();
       var marker = new google.maps.Marker({
-          map: this.map,
-          anchorPoint: new google.maps.Point(0, -29)
+          map: this.map
       });
+
+      marker.addListener('click', () => {
+          marker.setVisible(false);
+          this.http.get(this.weatherUrl(marker.getPosition().lat(),marker.getPosition().lng()))
+              .map(response => response.json())
+              .subscribe((result) => {
+                  this.dataWeather = result;
+
+                  marker.setIcon({
+                      url: "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png",
+                      size: new google.maps.Size(50, 50),
+                      //origin: new google.maps.Point(0, 0),
+                      //anchor: new google.maps.Point(0, -29)
+                      scaledSize: new google.maps.Size(50, 50)
+                  });
+                  marker.setVisible(true);
+
+                  infowindow.setContent(
+                      "<p><img src=" + "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png" + ">" +
+                      this.dataWeather.main.temp + "°C</p>" +
+                      '<div><strong>' + this.place.name + '</strong><br>' +
+                      this.address
+                  );
+                  infowindow.open(this.map, marker);
+              });
+      });
+      
     autocomplete.addListener('place_changed', () => {
-        infowindow.close();
         marker.setVisible(false);
-        var place = autocomplete.getPlace();
-    if (!place.geometry) {
+        infowindow.close();
+        // marker.setVisible(false);
+        this.place = autocomplete.getPlace();
+    if (!this.place.geometry) {
         window.alert("Autocomplete's returned place contains no geometry");
         return;
     }
-        var lat = place.geometry.location.lat();
-      var lng = place.geometry.location.lng();
-      this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lng+'&units=metric&appid=f513805255c080947d4115bc85cf923e')
-          .map(response => response.json())
-          .subscribe(result => {
-            console.log(result)
-          });
-        if (place.geometry.viewport) {
-            this.map.fitBounds(place.geometry.viewport);
-        } else {
-            this.map.setCenter(place.geometry.location);
-            this.map.setZoom(17);  // Why 17? Because it looks good.
-        }
-        marker.setIcon(/** @type {google.maps.Icon} */({
-            url: place.icon,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(35, 35)
-        }));
-        marker.setPosition(place.geometry.location);
-        marker.setVisible(true);
 
-        var address = '';
-        if (place.address_components) {
-            address = [
-                (place.address_components[0] && place.address_components[0].short_name || ''),
-                (place.address_components[1] && place.address_components[1].short_name || ''),
-                (place.address_components[2] && place.address_components[2].short_name || '')
+      var lat = this.place.geometry.location.lat();
+      var lng = this.place.geometry.location.lng();
+
+        this.map.setCenter(this.place.geometry.location);
+        this.map.setZoom(14);
+
+        this.address = '';
+        if (this.place.address_components) {
+            this.address = [
+                (this.place.address_components[0] && this.place.address_components[0].short_name || ''),
+                (this.place.address_components[1] && this.place.address_components[1].short_name || ''),
+                (this.place.address_components[2] && this.place.address_components[2].short_name || '')
             ].join(' ');
         }
 
-        infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-        infowindow.open(this.map, marker);
+        this.http.get(this.weatherUrl(lat,lng))
+            .map(response => response.json())
+            .subscribe((result) => {
+                this.dataWeather = result;
+                console.log(this.dataWeather);
+
+                marker.setIcon({
+                    url: "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png",
+                    size: new google.maps.Size(50, 50),
+                    //origin: new google.maps.Point(0, 0),
+                    //anchor: new google.maps.Point(0, -29)
+                    scaledSize: new google.maps.Size(50, 50)
+                });
+                marker.setPosition(this.place.geometry.location);
+                marker.setVisible(true);
+
+                infowindow.setContent(
+                    "<p><img src=" + "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png" + ">" +
+                    this.dataWeather.main.temp + "°C</p>" +
+                    '<div><strong>' + this.place.name + '</strong><br>'
+                    + this.address
+                );
+                infowindow.open(this.map, marker);
+            });
+
     });
   }
 
@@ -90,9 +127,9 @@ export class Page2 {
 
           let mapOptions = {
             center: latLng,
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-          }
+            zoom: 14,
+            mapTypeId: google.maps.MapTypeId.HYBRID
+          };
 
           this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
         },
@@ -104,4 +141,8 @@ export class Page2 {
     );
 
   }
+
+    weatherUrl(lat, lng){
+        return 'http://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lng+'&units=metric&appid=551b97ca557560dfc7d8c49a81b37d89'
+    }
 }

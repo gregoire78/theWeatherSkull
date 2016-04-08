@@ -59,7 +59,7 @@ export class Page1 {
     }
 
     getWeather(){
-        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+this.lat+'&lon='+this.lng+'&appid=f513805255c080947d4115bc85cf923e&lang=fr&units=metric')
+        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+this.lat+'&lon='+this.lng+'&appid=551b97ca557560dfc7d8c49a81b37d89&lang=fr&units=metric')
             .map(response => response.json())
             .subscribe((result) => {
                 this.datas = result;
