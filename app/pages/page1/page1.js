@@ -44,10 +44,11 @@ import {NavButton} from './navButton';
     directives: [CurrentTime, NavButton]
 })
 export class Page1 {
-    lat: int;
-    lng: int;
-    datas: {};
-    constructor(nav: NavController, http: Http) {
+    lat:int;
+    lng:int;
+    datas:{};
+
+    constructor(nav:NavController, http:Http) {
         this.nav = nav;
         this.http = http;
         this.datas = {};
@@ -58,8 +59,8 @@ export class Page1 {
         });
     }
 
-    getWeather(){
-        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat='+this.lat+'&lon='+this.lng+'&appid=551b97ca557560dfc7d8c49a81b37d89&lang=fr&units=metric')
+    getWeather() {
+        this.http.get('http://api.openweathermap.org/data/2.5/weather?lat=' + this.lat + '&lon=' + this.lng + '&appid=551b97ca557560dfc7d8c49a81b37d89&lang=fr&units=metric')
             .map(response => response.json())
             .subscribe((result) => {
                 this.datas = result;
@@ -74,8 +75,8 @@ export class Page1 {
             }, (error) => console.log("error : " + error), (complete) => console.log("complet !"));
     }
 
-    hourFormat(date){
-        date = new Date(date*1000);
+    hourFormat(date) {
+        date = new Date(date * 1000);
         return date.getHours() + 'h' + ('0' + date.getMinutes()).slice(-2);
     }
 }
