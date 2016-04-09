@@ -72,7 +72,8 @@ export class Page1 {
                 this.datas['weather_desc'] = result.weather[0].description;
                 this.datas['weather_icon'] = result.weather[0].icon;
                 console.log(result)
-            }, (error) => console.log("error : " + error), (complete) => console.log("complet !"));
+            });
+            // }, (error) => console.log("error : " + error), (complete) => console.log("complet !"));
     }
 
     hourFormat(date) {

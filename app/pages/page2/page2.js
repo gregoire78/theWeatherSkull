@@ -22,18 +22,17 @@ import {Http} from 'angular2/http';
 export class Page2 {
     constructor(http:Http) {
         this.http = http;
-        this.map = null;
+
         this.loadMap();
+
+        this.map = null;
         this.dataWeather = {};
-        this.address = "";
         this.place = ""
     }
 
     load() {
 
         var autocomplete = new google.maps.places.Autocomplete((document.getElementById("pac-input")));
-        autocomplete.bindTo('bounds', this.map);
-
         var infowindow = new google.maps.InfoWindow();
         var marker = new google.maps.Marker({
             map: this.map
@@ -45,81 +44,58 @@ export class Page2 {
                 .map(response => response.json())
                 .subscribe((result) => {
                     this.dataWeather = result;
-
-                    marker.setIcon({
-                        url: "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png",
-                        size: new google.maps.Size(50, 50),
-                        //origin: new google.maps.Point(0, 0),
-                        //anchor: new google.maps.Point(0, -29)
-                        scaledSize: new google.maps.Size(50, 50)
-                    });
-                    infowindow.setContent(
-                        "<p><img src=" + "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png" + ">" +
-                        this.dataWeather.main.temp + "°C</p>" +
-                        '<div><strong>' + this.place.name + '</strong><br>' +
-                        this.address
-                    );
-
+                    marker.setIcon(this.setMarker(this.dataWeather));
+                    marker.setPosition(this.place.geometry.location);
                     marker.setVisible(true);
+                    infowindow.setContent(this.infoWindowsContent(this.dataWeather, this.place));
                     infowindow.open(this.map, marker);
                 });
         });
 
+        autocomplete.bindTo('bounds', this.map);
         autocomplete.addListener('place_changed', () => {
             marker.setVisible(false);
             infowindow.close();
-            // marker.setVisible(false);
+
             this.place = autocomplete.getPlace();
             if (!this.place.geometry) {
-                window.alert("Autocomplete's returned place contains no geometry");
+                console.log("Autocomplete's returned place contains no geometry");
                 return;
             }
-
-            var lat = this.place.geometry.location.lat();
-            var lng = this.place.geometry.location.lng();
 
             this.map.setCenter(this.place.geometry.location);
             this.map.setZoom(12);
 
-            this.address = '';
+            this.place.address = '';
             if (this.place.address_components) {
-                this.address = [
-                    (this.place.address_components[0] && this.place.address_components[0].short_name || ''),
+                this.place.address = [
+                    //(this.place.address_components[0] && this.place.address_components[0].short_name || ''),
                     (this.place.address_components[1] && this.place.address_components[1].short_name || ''),
                     (this.place.address_components[2] && this.place.address_components[2].short_name || '')
                 ].join(' ');
             }
 
-            this.http.get(this.weatherUrl(lat, lng))
-                .map(response => response.json())
-                .subscribe((result) => {
-                    this.dataWeather = result;
-                    console.log(this.dataWeather);
-
-                    marker.setIcon({
-                        url: "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png",
-                        size: new google.maps.Size(50, 50),
-                        //origin: new google.maps.Point(0, 0),
-                        //anchor: new google.maps.Point(0, -29)
-                        scaledSize: new google.maps.Size(50, 50)
-                    });
-                    marker.setPosition(this.place.geometry.location);
-                    marker.setVisible(true);
-
-                    infowindow.setContent(
-                        "<p><img src=" + "http://weatherandtime.net/images/icons/1/" + this.dataWeather.weather[0].icon + ".png" + ">" +
-                        this.dataWeather.main.temp + "°C</p>" +
-                        '<div><strong>' + this.place.name + '</strong><br>'
-                        + this.address
-                    );
-                    infowindow.open(this.map, marker);
-                });
+            this.getDataWeather(marker, infowindow);
 
         });
     }
 
+    getDataWeather(marker, infowindow) {
+        this.http.get(this.weatherUrl(this.place.geometry.location.lat(), this.place.geometry.location.lng()))
+            .map(response => response.json())
+            .subscribe((result) => {
+                this.dataWeather = result;
+                marker.setIcon(this.setMarker(this.dataWeather));
+                marker.setPosition(this.place.geometry.location);
+                marker.setVisible(true);
+                infowindow.setContent(this.infoWindowsContent(this.dataWeather, this.place));
+                infowindow.open(this.map, marker);
+            });
+    }
+
     loadMap() {
-        var styledMap = new google.maps.StyledMapType([{
+        var styledMap = new google.maps.StyledMapType([
+            {
                 "featureType": "landscape",
                 "stylers": [{"hue": "#FFBB00"}, {"saturation": 43.400000000000006}, {"lightness": 37.599999999999994}, {"gamma": 1}]
             }, {
@@ -137,10 +113,12 @@ export class Page2 {
             }, {
                 "featureType": "poi",
                 "stylers": [{"hue": "#00FF6A"}, {"saturation": -1.0989010989011234}, {"lightness": 11.200000000000017}, {"gamma": 1}]
-            }],
+            }
+        ],
             {name: "météo"});
 
         let options = {timeout: 10000, enableHighAccuracy: true};
+
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -168,5 +146,22 @@ export class Page2 {
 
     weatherUrl(lat, lng) {
         return 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&units=metric&appid=551b97ca557560dfc7d8c49a81b37d89'
+    }
+
+    infoWindowsContent(dataWeather, place){
+        return "<p><img src=" + "http://weatherandtime.net/images/icons/1/" + dataWeather.weather[0].icon + ".png" + ">" +
+        dataWeather.main.temp + "°C</p>" +
+        '<div><strong>' + place.name + '</strong><br>'
+        + place.address
+    }
+
+    setMarker(dataWeather){
+        return {
+            url: "http://weatherandtime.net/images/icons/1/" + dataWeather.weather[0].icon + ".png",
+            size: new google.maps.Size(50, 50),
+            //origin: new google.maps.Point(0, 0),
+            //anchor: new google.maps.Point(0, -29)
+            scaledSize: new google.maps.Size(50, 50)
+        }
     }
 }
