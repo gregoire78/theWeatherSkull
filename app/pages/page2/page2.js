@@ -40,16 +40,7 @@ export class Page2 {
 
         marker.addListener('click', () => {
             marker.setVisible(false);
-            this.http.get(this.weatherUrl(marker.getPosition().lat(), marker.getPosition().lng()))
-                .map(response => response.json())
-                .subscribe((result) => {
-                    this.dataWeather = result;
-                    marker.setIcon(this.setMarker(this.dataWeather));
-                    marker.setPosition(this.place.geometry.location);
-                    marker.setVisible(true);
-                    infowindow.setContent(this.infoWindowsContent(this.dataWeather, this.place));
-                    infowindow.open(this.map, marker);
-                });
+            this.getDataWeather(marker, infowindow, marker.getPosition());
         });
 
         autocomplete.bindTo('bounds', this.map);
@@ -75,19 +66,20 @@ export class Page2 {
                 ].join(' ');
             }
 
-            this.getDataWeather(marker, infowindow);
+            this.getDataWeather(marker, infowindow, this.place.geometry.location);
 
         });
     }
 
-    getDataWeather(marker, infowindow) {
-        this.http.get(this.weatherUrl(this.place.geometry.location.lat(), this.place.geometry.location.lng()))
+    getDataWeather(marker, infowindow, latlng) {
+        this.http.get(this.weatherUrl(latlng.lat(), latlng.lng()))
             .map(response => response.json())
             .subscribe((result) => {
                 this.dataWeather = result;
                 marker.setIcon(this.setMarker(this.dataWeather));
                 marker.setPosition(this.place.geometry.location);
                 marker.setVisible(true);
+                console.log(result)
                 infowindow.setContent(this.infoWindowsContent(this.dataWeather, this.place));
                 infowindow.open(this.map, marker);
             });
@@ -145,14 +137,17 @@ export class Page2 {
     }
 
     weatherUrl(lat, lng) {
-        return 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&units=metric&appid=551b97ca557560dfc7d8c49a81b37d89'
+        return 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&units=metric&lang=fr&appid=551b97ca557560dfc7d8c49a81b37d89'
     }
 
     infoWindowsContent(dataWeather, place){
-        return "<p><img src=" + "http://weatherandtime.net/images/icons/1/" + dataWeather.weather[0].icon + ".png" + ">" +
-        dataWeather.main.temp + "°C</p>" +
+        //"<p><img src=" + "http://weatherandtime.net/images/icons/1/" + dataWeather.weather[0].icon + ".png" + ">" +
+        return '<h1>'+dataWeather.main.temp + "°C</h1>" +
+            dataWeather.weather[0].description +
+            "</p>" +
         '<div><strong>' + place.name + '</strong><br>'
         + place.address
+        + '<br><button class="btn-details">Détails</button>'
     }
 
     setMarker(dataWeather){
