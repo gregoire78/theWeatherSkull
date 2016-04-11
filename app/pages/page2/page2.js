@@ -5,10 +5,14 @@ import {Http} from 'angular2/http';
 @Page({
     template: `
 <ion-navbar *navbar primary="">
-  <ion-title>The Weather Skull</ion-title>
+    <ion-title>The Weather Skull</ion-title>
 </ion-navbar>
-<ion-toolbar>
-  <ion-title>Rechercher</ion-title>
+<ion-toolbar primary>
+    <ion-searchbar primary
+    (click)="load()"
+                   show-cancel="true"
+                   placeholder="Rechercher">
+    </ion-searchbar>
 </ion-toolbar>
 
 <ion-content class="page2">
@@ -24,30 +28,19 @@ export class Page2 {
         this.http = http;
 
         this.loadMap();
-
         this.map = null;
+        this.marker=null;
+        this.infowindow=null;
         this.dataWeather = {};
         this.place = ""
     }
 
     load() {
-
-        var autocomplete = new google.maps.places.Autocomplete((document.getElementById("pac-input")));
-        var infowindow = new google.maps.InfoWindow();
-        var marker = new google.maps.Marker({
-            map: this.map
-        });
-
-        marker.addListener('click', () => {
-            marker.setVisible(false);
-            this.getDataWeather(marker, infowindow, marker.getPosition());
-        });
+        console.log('load');
+        var autocomplete = new google.maps.places.Autocomplete(document.getElementById("pac-input"));
 
         autocomplete.bindTo('bounds', this.map);
         autocomplete.addListener('place_changed', () => {
-            marker.setVisible(false);
-            infowindow.close();
-
             this.place = autocomplete.getPlace();
             if (!this.place.geometry) {
                 console.log("Autocomplete's returned place contains no geometry");
@@ -65,23 +58,25 @@ export class Page2 {
                     (this.place.address_components[2] && this.place.address_components[2].short_name || '')
                 ].join(' ');
             }
+            this.getDataWeather(this.place.geometry.location);
 
-            this.getDataWeather(marker, infowindow, this.place.geometry.location);
-
+        });
+        this.marker.addListener('click', () => {
+            this.getDataWeather(this.marker.getPosition());
         });
     }
 
-    getDataWeather(marker, infowindow, latlng) {
+    getDataWeather(latlng) {
+        this.marker.setVisible(false);
         this.http.get(this.weatherUrl(latlng.lat(), latlng.lng()))
             .map(response => response.json())
             .subscribe((result) => {
                 this.dataWeather = result;
-                marker.setIcon(this.setMarker(this.dataWeather));
-                marker.setPosition(this.place.geometry.location);
-                marker.setVisible(true);
-                console.log(result)
-                infowindow.setContent(this.infoWindowsContent(this.dataWeather, this.place));
-                infowindow.open(this.map, marker);
+                this.marker.setIcon(this.setMarker(this.dataWeather));
+                this.marker.setPosition(this.place.geometry.location);
+                this.marker.setVisible(true);
+                this.infowindow.setContent(this.infoWindowsContent(this.dataWeather, this.place));
+                this.infowindow.open(this.map, this.marker);
             });
     }
 
@@ -127,6 +122,12 @@ export class Page2 {
                 this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
                 this.map.mapTypes.set('map_style', styledMap);
                 this.map.setMapTypeId('map_style');
+
+                this.marker = new google.maps.Marker({
+                    map: this.map
+                });
+                this.infowindow = new google.maps.InfoWindow();
+                this.infowindow.close(this.map, this.marker);
             },
 
             (error) => {

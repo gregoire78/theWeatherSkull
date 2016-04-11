@@ -1,0 +1,47 @@
+{
+  "coord":
+  {
+    "lon":2.35,
+    "lat":48.85
+  },
+  "weather":
+  [
+    {
+      "id":802,
+      "main":"Clouds",
+      "description":"partiellement ensoleillé",
+      "icon":"03d"
+    }
+  ],
+  "base":"cmc stations",
+  "main":
+  {
+    "temp":15.06,
+    "pressure":1011.19,
+    "humidity":78,
+    "temp_min":15.06,
+    "temp_max":15.06,
+    "sea_level":1023.08,
+    "grnd_level":1011.19
+  },
+  "wind":
+  {
+    "speed":2.96,
+    "deg":277.001
+  },
+  "clouds":
+  {
+    "all":48
+  },
+  "dt":1459863726,
+  "sys":
+  {
+    "message":0.0037,
+    "country":"FR",
+    "sunrise":1459833489,
+    "sunset":1459880928
+  },
+  "id":2988507,
+  "name":"Paris",
+  "cod":200
+}
