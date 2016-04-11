@@ -25,7 +25,12 @@ export class InputSearch {
     constructor(nav:NavController){
         this.nav = nav;
     }
+
     goToDetails() {
-        this.nav.push(Page3);
+        if (document.getElementById('pac-input').value==''){
+            console.log('vider')
+        }else{
+            this.nav.push(Page3)
+        }
     }
 }

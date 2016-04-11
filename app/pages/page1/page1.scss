@@ -1,11 +1,12 @@
 .page1 {
   //background: url('http://image.noelshack.com/fichiers/2016/12/1459000356-pluie.png') no-repeat center;
-  background: url('/img/bck.png') no-repeat center;
+  background: url('/img/Nature.jpg') no-repeat center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
   //scroll-content {
-  //  background-color: rgba(165, 210, 255, 0.46);
+  //  background: url("/img/Nature.jpg")  no-repeat center;
+  //  background-size: 100% 100%;
   //}
 
   current-time {
@@ -20,15 +21,6 @@
   #celsius{
     font-size: 3.58rem;
     position: absolute;
-  }
-
-  scroll-content{
-
-
-
-    background: url("Nature.jpg");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
   }
 
 

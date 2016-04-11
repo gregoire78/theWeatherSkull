@@ -28,18 +28,17 @@ export class Page2 {
         this.map = null;
         this.marker=null;
         this.infowindow=null;
+        this.infowindow=null;
         this.dataWeather = {};
         this.place = ""
     }
 
     load() {
         console.log('load');
-        var input = document.getElementById("pac-input");
-        var autocomplete = new google.maps.places.Autocomplete(input);
 
-        autocomplete.bindTo('bounds', this.map);
-        autocomplete.addListener('place_changed', () => {
-            this.place = autocomplete.getPlace();
+        this.autocomplete.bindTo('bounds', this.map);
+        this.autocomplete.addListener('place_changed', () => {
+            this.place = this.autocomplete.getPlace();
             if (!this.place.geometry) {
                 console.log("Autocomplete's returned place contains no geometry");
                 return;
@@ -126,6 +125,10 @@ export class Page2 {
                 this.marker = new google.maps.Marker({
                     map: this.map
                 });
+
+                var input = document.getElementById("pac-input");
+                this.autocomplete = new google.maps.places.Autocomplete(input);
+
                 this.infowindow = new google.maps.InfoWindow();
                 this.infowindow.close(this.map, this.marker);
             },
