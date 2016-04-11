@@ -2,6 +2,6 @@ import {Page} from 'ionic-angular';
 
 
 @Page({
-  templateUrl: 'build/pages/page3/page3.html'
+  template:``
 })
 export class Page3 {}

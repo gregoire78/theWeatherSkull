@@ -112,6 +112,7 @@ export class Page2 {
                     center: latLng,
                     zoom: 12,
                     mapTypeControl: false,
+                    streetViewControl: false,
                     mapTypeControlOptions: {
                         style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
                         mapTypeIds: [google.maps.MapTypeId.TERRAIN, 'map_style']
