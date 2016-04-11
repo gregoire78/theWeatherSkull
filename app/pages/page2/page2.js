@@ -1,27 +1,24 @@
 import {Page} from 'ionic-angular';
 import {Http} from 'angular2/http';
-
+import {InputSearch} from './input-search'
 
 @Page({
     template: `
 <ion-navbar *navbar primary="">
     <ion-title>The Weather Skull</ion-title>
 </ion-navbar>
-<ion-toolbar primary>
-    <ion-searchbar primary
-    (click)="load()"
-                   show-cancel="true"
-                   placeholder="Rechercher">
-    </ion-searchbar>
-</ion-toolbar>
+
+    <input-search (click)="load()" ></input-search>
+
 
 <ion-content class="page2">
     <!--<input (click)="load()" id="dede" autocapitalize="off" autocomplete="off" autocorrect="off" class="searchbar-input" spellcheck="false" type="search" placeholder="Search">-->
-    <input (click)="load()" id="pac-input" autocapitalize="off" autocomplete="off" autocorrect="off" type="text" placeholder="Enter a location" spellcheck="false" type="search">
+    
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAC4k0qIOxFSbHMZ6Du0sirVICthUVkwfU&libraries=places"></script>
     <div id="map"></div>  
 </ion-content>
-`
+`,
+    directives: [InputSearch]
 })
 export class Page2 {
     constructor(http:Http) {
@@ -37,7 +34,8 @@ export class Page2 {
 
     load() {
         console.log('load');
-        var autocomplete = new google.maps.places.Autocomplete(document.getElementById("pac-input"));
+        var input = document.getElementById("pac-input");
+        var autocomplete = new google.maps.places.Autocomplete(input);
 
         autocomplete.bindTo('bounds', this.map);
         autocomplete.addListener('place_changed', () => {
@@ -113,9 +111,11 @@ export class Page2 {
                 let mapOptions = {
                     center: latLng,
                     zoom: 12,
-                    // mapTypeId: google.maps.MapTypeId.HYBRID,
+                    mapTypeControl: false,
+                    streetViewControl: false,
                     mapTypeControlOptions: {
-                         mapTypeIds: [google.maps.MapTypeId.TERRAIN, 'map_style']
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                        mapTypeIds: [google.maps.MapTypeId.TERRAIN, 'map_style']
                     }
                 };
 
@@ -143,12 +143,16 @@ export class Page2 {
 
     infoWindowsContent(dataWeather, place){
         //"<p><img src=" + "http://weatherandtime.net/images/icons/1/" + dataWeather.weather[0].icon + ".png" + ">" +
-        return '<h1>'+dataWeather.main.temp + "°C</h1>" +
+        return '' +
+            '<p>' +
+            '<h1>'+dataWeather.main.temp+'°C</h1>' +
             dataWeather.weather[0].description +
-            "</p>" +
-        '<div><strong>' + place.name + '</strong><br>'
-        + place.address
-        + '<br><button class="btn-details">Détails</button>'
+            '</p>' +
+            '<div>' +
+            '<strong>' + place.name + '</strong><br>' +
+            place.address +
+            '<br><button class="btn-details">Détails</button>' +
+            '</div>'
     }
 
     setMarker(dataWeather){
