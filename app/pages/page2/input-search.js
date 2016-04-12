@@ -10,10 +10,10 @@ import {Page3} from '../page3/page3';
     template: `
 <ion-toolbar>
     <ion-title>
-        <input type="search" id="pac-input" onclick="this.value = ''" autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="Rechercher..." spellcheck="false" type="search">
+        <input type="search" id="pac-input" onclick="this.value = ''" #searchInput autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="Rechercher..." spellcheck="false" type="search">
     </ion-title>
     <ion-buttons end>
-        <button royal (click)="goToDetails()">
+        <button royal (click)="goToDetails(searchInput)">
             <ion-icon name="arrow-dropright-circle"></ion-icon>
         </button>
     </ion-buttons>
@@ -22,15 +22,18 @@ import {Page3} from '../page3/page3';
     directives: [IONIC_DIRECTIVES, Button, Icon, Page3]
 })
 export class InputSearch {
+    @Input() weather;
+    @Input() place;
     constructor(nav:NavController){
         this.nav = nav;
     }
 
-    goToDetails() {
-        if (document.getElementById('pac-input').value==''){
-            console.log('vider')
-        }else{
-            this.nav.push(Page3)
+    goToDetails(searchInput) {
+        if (!searchInput.value==''){
+            this.nav.push(Page3,{
+                weather: this.weather,
+                place: this.place
+            })
         }
     }
 }

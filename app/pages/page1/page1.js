@@ -16,7 +16,7 @@ import {NavButton} from './navButton';
     <ion-row>
         <ion-col width-60>
             <h3>
-                <i class="wi wi-owm-{{datas.weather_id}}"></i> {{datas.weather_desc}}
+                <i class="wi wi-owm-{{datas.weather_id}}"></i> <span id="weather_desc">{{datas.weather_desc}}</span>
                 <hr>
                 <i class="wi wi-sunrise"></i> {{datas.sunrise}}<br>
                 <i class="wi wi-sunset"></i> {{datas.sunset}}
@@ -32,15 +32,15 @@ import {NavButton} from './navButton';
     </ion-row>
     <p id="temp"><span id="val-temp">{{datas.temp}}</span><span id="celsius">°C</span></p>
 </ion-content>
-<ion-toolbar position="bottom">
-  <p>Ash, Misty, Brock</p>
-  <ion-buttons end>
-    <button royal>
-      Send
-      <ion-icon name="send"></ion-icon>
-    </button>
-  </ion-buttons>
-</ion-toolbar>`,
+<!--<ion-toolbar position="bottom">-->
+  <!--<p>Ash, Misty, Brock</p>-->
+  <!--<ion-buttons end>-->
+    <!--<button royal>-->
+      <!--Send-->
+      <!--<ion-icon name="send"></ion-icon>-->
+    <!--</button>-->
+  <!--</ion-buttons>-->
+<!--</ion-toolbar>-->`,
     directives: [CurrentTime, NavButton]
 })
 export class Page1 {

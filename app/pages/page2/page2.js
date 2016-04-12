@@ -8,7 +8,7 @@ import {InputSearch} from './input-search'
     <ion-title>The Weather Skull</ion-title>
 </ion-navbar>
 
-    <input-search (click)="load()" ></input-search>
+    <input-search (click)="load()" [weather]="dataWeather" [place]="place" ></input-search>
 
 
 <ion-content class="page2">
@@ -21,6 +21,7 @@ import {InputSearch} from './input-search'
     directives: [InputSearch]
 })
 export class Page2 {
+    dataWeather: {}
     constructor(http:Http) {
         this.http = http;
 
@@ -154,7 +155,7 @@ export class Page2 {
             '<div>' +
             '<strong>' + place.name + '</strong><br>' +
             place.address +
-            '<br><button class="btn-details">Détails</button>' +
+            '<!--<br><button class="btn-details">Détails</button>-->' +
             '</div>'
     }
 
