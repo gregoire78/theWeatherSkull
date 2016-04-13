@@ -1,4 +1,5 @@
 import {Page, NavParams} from 'ionic-angular';
+import {Hour} from '../hour_format';
 
 @Page({
   template:`
@@ -23,24 +24,19 @@ import {Page, NavParams} from 'ionic-angular';
         </p>
     </div>
 </ion-content>`,
-  directives: []
+  providers: [Hour]
 })
 export class Page3 {
 
-  constructor(navParams: NavParams){
+  constructor(navParams: NavParams, hour:Hour){
     this.weather = navParams.get("weather");
-    this.weather.sunrise = this.hourFormat(this.weather.sys.sunrise);
-    this.weather.sunset = this.hourFormat(this.weather.sys.sunset);
+    this.weather.sunrise = hour.hourFormat(this.weather.sys.sunrise);
+    this.weather.sunset = hour.hourFormat(this.weather.sys.sunset);
     this.place = navParams.get("place");
     this.place.address = [
       (this.place.address_components[0] && this.place.address_components[0].short_name + ', ' || ''),
       (this.place.address_components[1] && this.place.address_components[1].short_name || ''),
       (this.place.address_components[2] && this.place.address_components[2].short_name || '')
     ].join(' ');
-  }
-
-  hourFormat(date) {
-    date = new Date(date * 1000);
-    return date.getHours() + 'h' + ('0' + date.getMinutes()).slice(-2);
   }
 }

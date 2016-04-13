@@ -4,6 +4,7 @@ import {Geolocation} from 'ionic-native';
 import {NavController} from 'ionic-angular';
 import {Http} from 'angular2/http';
 import {NavButton} from './navButton';
+import {Hour} from '../hour_format';
 
 @Page({
     template: `
@@ -35,15 +36,18 @@ import {NavButton} from './navButton';
             <ion-icon name="refresh"></ion-icon>
     </button>
 </ion-content>`,
-    directives: [CurrentTime, NavButton]
+    directives: [CurrentTime, NavButton],
+    providers: [Hour]
 })
 export class Page1 {
     lat:int;
     lng:int;
     datas:{};
+    hour:Hour;
 
-    constructor(nav:NavController, http:Http) {
+    constructor(nav:NavController, http:Http, hour:Hour) {
         this.nav = nav;
+        this.hour=hour;
         this.http = http;
         this.datas = {};
         Geolocation.getCurrentPosition().then((resp) => {
@@ -61,8 +65,8 @@ export class Page1 {
                 this.address = result.name;
                 this.datas['temp'] = result.main.temp;
                 this.datas['humidity'] = result.main.humidity;
-                this.datas['sunrise'] = this.hourFormat(result.sys.sunrise);
-                this.datas['sunset'] = this.hourFormat(result.sys.sunset);
+                this.datas['sunrise'] = this.hour.hourFormat(result.sys.sunrise);
+                this.datas['sunset'] = this.hour.hourFormat(result.sys.sunset);
                 this.datas['weather_id'] = result.weather[0].id;
                 this.datas['weather_desc'] = result.weather[0].description;
                 this.datas['weather_icon'] = result.weather[0].icon;
@@ -71,10 +75,5 @@ export class Page1 {
                 console.log(result)
             });
             // }, (error) => console.log("error : " + error), (complete) => console.log("complet !"));
-    }
-
-    hourFormat(date) {
-        date = new Date(date * 1000);
-        return date.getHours() + 'h' + ('0' + date.getMinutes()).slice(-2);
     }
 }
