@@ -33,6 +33,23 @@ export class Page2 {
         this.place = ""
     }
 
+
+    geocodePosition(pos) {
+    this.geocoder.geocode({
+        latLng: pos
+    }, (responses) => {
+        if (responses && responses.length > 0) {
+            this.place = responses[0];
+            this.place.name=responses[0].address_components[2].long_name;
+            this.place.address=responses[0].address_components[3].long_name + " " + responses[0].address_components[4].long_name;
+            this.getDataWeather(pos);
+            console.log(responses[0]);
+        } else {
+            console.log('Cannot determine address at this location.');
+        }
+    });
+}
+
     load() {
         console.log('load');
 
@@ -61,6 +78,10 @@ export class Page2 {
         this.marker.addListener('click', () => {
             this.getDataWeather(this.marker.getPosition());
         });
+        this.marker.addListener('dragend', () => {
+            this.geocodePosition(this.marker.getPosition());
+        });
+
     }
 
     getDataWeather(latlng) {
@@ -71,7 +92,7 @@ export class Page2 {
             .subscribe((result) => {
                 this.dataWeather = result;
                 this.marker.setIcon(this.setMarker(this.dataWeather));
-                this.marker.setPosition(this.place.geometry.location);
+                this.marker.setPosition(latlng);
                 this.marker.setVisible(true);
                 this.infowindow.setContent(this.infoWindowsContent(this.dataWeather, this.place));
                 this.infowindow.open(this.map, this.marker);
@@ -101,7 +122,7 @@ export class Page2 {
             }
         ],
             {name: "météo"});
-
+        this.geocoder = new google.maps.Geocoder();
         let options = {timeout: 10000, enableHighAccuracy: true};
 
         navigator.geolocation.getCurrentPosition(
@@ -124,7 +145,9 @@ export class Page2 {
                 this.map.setMapTypeId('map_style');
 
                 this.marker = new google.maps.Marker({
-                    map: this.map
+                    map: this.map,
+                    draggable:true,
+                    animation: google.maps.Animation.DROP
                 });
 
                 var input = document.getElementById("pac-input");

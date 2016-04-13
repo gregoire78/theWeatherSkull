@@ -29,7 +29,7 @@ export class InputSearch {
     }
 
     goToDetails(searchInput) {
-        if (!searchInput.value=='' && this.place.geometry){
+        if (!searchInput.value=='' || this.place.geometry){
             this.nav.push(Page3,{
                 weather: this.weather,
                 place: this.place
