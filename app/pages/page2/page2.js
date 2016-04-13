@@ -10,7 +10,6 @@ import {InputSearch} from './input-search'
 
     <input-search (click)="load()" [weather]="dataWeather" [place]="place" ></input-search>
 
-
 <ion-content class="page2">
     <!--<input (click)="load()" id="dede" autocapitalize="off" autocomplete="off" autocorrect="off" class="searchbar-input" spellcheck="false" type="search" placeholder="Search">-->
     
@@ -66,7 +65,8 @@ export class Page2 {
 
     getDataWeather(latlng) {
         this.marker.setVisible(false);
-        this.http.get(this.weatherUrl(latlng.lat(), latlng.lng()))
+        this.infowindow.close(this.map, this.marker);
+        this.http.get(this.weatherUrl(latlng))
             .map(response => response.json())
             .subscribe((result) => {
                 this.dataWeather = result;
@@ -141,8 +141,8 @@ export class Page2 {
 
     }
 
-    weatherUrl(lat, lng) {
-        return 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lng + '&units=metric&lang=fr&appid=551b97ca557560dfc7d8c49a81b37d89'
+    weatherUrl(latlng) {
+        return 'http://api.openweathermap.org/data/2.5/weather?lat=' + latlng.lat() + '&lon=' + latlng.lng() + '&appid=551b97ca557560dfc7d8c49a81b37d89&lang=fr&units=metric'
     }
 
     infoWindowsContent(dataWeather, place){
