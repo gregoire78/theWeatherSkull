@@ -31,6 +31,9 @@ import {NavButton} from './navButton';
         </icon-col>
     </ion-row>
     <p id="temp"><span id="val-temp">{{datas.temp}}</span><span id="celsius">°C</span></p>
+    <button royal (click)="getWeather()">
+            <ion-icon name="refresh"></ion-icon>
+    </button>
 </ion-content>`,
     directives: [CurrentTime, NavButton]
 })
