@@ -7,7 +7,7 @@ import {IONIC_DIRECTIVES} from 'ionic-angular';
 @Component({
     selector: 'current-time',
     template: `
-        <h1>{{strDay(day)}} {{dat}} {{strMonth(month)}} {{year}}</h1>
+        <h1>{{strDay(day)}} {{dat}} {{strMonth(month-1)}} {{year}}</h1>
         <h2>{{hour}}h{{minute}}</h2>
     `,
     directives: [IONIC_DIRECTIVES]
@@ -16,26 +16,26 @@ export class CurrentTime {
     time:Date;
     frDate = {
         weekday : [
-            "Dimanche",
-            "Lundi",
-            "Mardi",
-            "Mercredi",
-            "Jeudi",
-            "Vendredi",
-            "Samedi"
+            "dimanche",
+            "lundi",
+            "mardi",
+            "mercredi",
+            "jeudi",
+            "vendredi",
+            "samedi"
         ],
         monthname : [
-            "Janvier",
-            "Février",
-            "Mars",
-            "Avril",
-            "Mai",
-            "Juin",
-            "Juillet",
-            "Aout",
-            "Septembre",
-            "Octobre",
-            "Décembre"
+            "janvier",
+            "février",
+            "mars",
+            "avril",
+            "mai",
+            "juin",
+            "juillet",
+            "aout",
+            "septembre",
+            "octobre",
+            "décembre"
         ]
     };
 
